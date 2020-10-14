@@ -5,6 +5,7 @@ import struct
 
 nop_sled_16 = "\x90"*16        # 16 byte NOP sled if needed
 sub_esp_10= "\x83\xec\x10"  # sub esp,0x10 (drop esp back to 16 bytes)
+shell_process = None
 
 # These are useful methods for testing purposes while develop an exploit
 def encode(string):
@@ -80,5 +81,10 @@ def generate_nop_sled(length):
 
 
 
-p = generate_pattern(7000)
-print(p)
+def spawn_rev_shell(port):
+    global shell_process
+    from subprocess import Popen
+    #from threading import Thread
+    shell_process = Popen(f"nc -lnvp {str(port)}",shell=True)
+    shell_process.communicate()
+    
