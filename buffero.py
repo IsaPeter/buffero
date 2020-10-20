@@ -88,7 +88,7 @@ def connect_bind_shell(address,port,timeout=3):
 def get_address_space(start_address, end_address):
     space = end_address - start_address
     return space
-def get_pattern_space(length=6000,pstart, pend):
+def get_pattern_space(pstart, pend,length=6000):
     ps = bytearray.fromhex(pstart)
     pe = bytearray.fromhex(pend)
     ps.reverse()
