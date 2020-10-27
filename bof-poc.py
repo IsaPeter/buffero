@@ -6,7 +6,7 @@ parser.add_argument('-R','--rhost',dest='rhost',help="Set the Remote host addres
 parser.add_argument('-P','--rport',dest='rport',help="Set the Remote host port")
 parser.add_argument('-l','--length',dest='length',help="Length of the pattern")
 parser.add_argument('-c','--char',dest='character',help="Set the Character to build pattern from")
-parser.add_argument('-b','--receive-banner',dest='banner',help="Receive the banner of the application")
+parser.add_argument('-b','--receive-banner',action='store_true',help="Receive the banner of the application")
 
 
 args = parser.parse_args()
