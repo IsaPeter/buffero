@@ -11,7 +11,7 @@ def encode(string):
     return string.encode(encoding='latin-1')    # Encoding the given string to Latin-1 type byze array
 def decode(bytearr):
     return bytearr.decode(encoding='latin-1')   # Decoding the given byte array to Latin-1 encoded string 
-def generate_bctest(badchars=['0x00']):
+def generate_chars(badchars=['0x00'],create_bin=False):
     """
     This function will generate character array for bad char identification.
     """
@@ -21,9 +21,12 @@ def generate_bctest(badchars=['0x00']):
         if i not in badchars:
             bctest += chr(i)            # Add character to string ii it is not a known bad char
       
-    # Write the output into a file        
-    with open('bctest.bin','wb') as f:  
-        f.write(encode(bctest))         # write the result into a binary (required for mona)
+      
+    if create_bin:
+        # Write the output into a file        
+        with open('bctest.bin','wb') as f:  
+            f.write(encode(bctest))         # write the result into a binary (required for mona)
+            
     return bctest                       # return the resulted string
 def generate_pattern(plength):
     """
