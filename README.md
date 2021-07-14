@@ -42,9 +42,13 @@ import buffero
 badchararr = [0x00]	# Specify \x00 as a bad character
     
 # Generate a bad character array without the \x00 character
-bc = buffero.generate_bctest(badchars=badchararr)
+bc = buffero.generate_chars(badchars=badchararr)
+
+# The create_bin variable is False by default, if you enable it, 
+# it will create a 'bctest.bin' named file with the generated characters
+bc = buffero.generate_chars(badchars=badchararr, create_bin=True)
 ```
-Additionally, the **generate_bctest** function will write a result into a file which name is **bctest.bin**. This file is easily examine by xxd command.
+Additionally, the **generate_chars** function will write a result into a file which name is **bctest.bin** if the create_bin variable is set to True. This file is easily examine by xxd command.
 ```bash
 root@kali:~# xxd bctest.bin
 00000000: 0102 0304 0506 0708 090a 0b0c 0d0e 0f10  ................
